@@ -19,8 +19,8 @@ public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> 
  
         // Initialize our session Object when the channel is initialized, attach 
         // it to the channel.
-    	//TODO: !!
-       // ch.attr(NetworkConstants.SESSION_KEY).setIfAbsent(new PlayerIO(ch)); 
+
+    	ch.attr(Attributes.SESSION).setIfAbsent(new UserIO(ch)); 
  
         // Initialize the pipeline channel handlers. 
     	//TODO: 100 секунд записать куда-нибудь в конфиг!
@@ -28,7 +28,8 @@ public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> 
         
         // TODO: вернуть логин
         //ByteToMessageDecoder loginHandshakeHandler = new LoginHandshakeHandler();
-        //ch.pipeline().addLast("login-handshake", loginHandshakeHandler); 
+        //ch.pipeline().addLast("login-handshake", loginHandshakeHandler);
+        
         ch.pipeline().addLast("channel-handler", channelHandler); 
         ch.pipeline().addLast("timeout", timeout); 
     } 

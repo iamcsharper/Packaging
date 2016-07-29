@@ -25,22 +25,22 @@ public class ChatServer {
 	private ChannelInitializer<SocketChannel> channelInitializer = new ServerChannelInitializer();
 
 	/**
-	 * Порт приема клиентов
+	 * Port on which server is listening for connections
 	 */
 	private int port;
 
 	/**
-	 * Запущен ли сервер?
+	 * Is server running?
 	 */
 	private boolean isRunning;
 
 	/**
-	 * Был ли сервер выключен (защита от повтора)
+	 * Did we call server to stop?
 	 */
 	private boolean serverStopped;
 
 	/**
-	 * Дрыц-тыц, запускатор
+	 * The server runner who manages all events
 	 */
 	private ServerRunner serverRunner;
 
@@ -72,21 +72,6 @@ public class ChatServer {
 
 	public static void main(String[] args) {
 		final ChatServer server = new ChatServer(25565);
-		
-		/*server.addTicker(10, new ITicker() {
-			@Override
-			public void tick() {
-				System.out.println("10 ticked! TPS: " + server.getServerRunner().getTPS());
-			}
-		});*/
-		
-		server.addTicker(40, new ITicker() {
-			@Override
-			public void tick() {
-				System.out.println("50 ticked! Saving user data...");
-			}
-		});
-		
 		server.start();
 
 		Runtime.getRuntime().addShutdownHook(new Thread("Server Shutdown Thread") {
@@ -96,8 +81,8 @@ public class ChatServer {
 		});
 	}
 
-	public void addTicker(int delay, ITicker ticker) {
-		this.serverRunner.registerTickListener(ticker, delay);
+	public void addTicker(Ticker ticker) {
+		this.serverRunner.registerTickListener(ticker);
 	}
 
 	/**

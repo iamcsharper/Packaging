@@ -1,7 +1,7 @@
 package ru.xupoh.test;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServerRunner extends Thread {
 
@@ -25,9 +25,9 @@ public class ServerRunner extends Thread {
 	 */
 	private ChatServer server;
 
-	private Map<Integer, ITicker> listeners = new HashMap<Integer, ITicker>();
+	private List<Ticker> listeners = new ArrayList<>();
 
-	private int threadTimeout;
+	// TODO: private int threadTimeout;
 
 	/**
 	 * Creates a new ServerRunner
@@ -45,14 +45,11 @@ public class ServerRunner extends Thread {
 
 		this.server = server;
 		this.tickRate = tickRate;
-		this.threadTimeout = threadTimeout;
+		//this.threadTimeout = threadTimeout;
 	}
 
-	public void registerTickListener(ITicker listener, int delay) {
-		if (delay <= 0)
-			delay = 0;
-
-		this.listeners.put(delay, listener);
+	public void registerTickListener(Ticker listener) {
+		this.listeners.add(listener);
 	}
 
 	@Override
@@ -69,7 +66,7 @@ public class ServerRunner extends Thread {
 			while (this.server.isRunning()) {
 				long difference = System.currentTimeMillis() - lastTime;
 
-				// Если время
+				// пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 				if (difference > toomuch && lastTime - timeOfLastWarning >= 10000L) {
 					System.out.println("Can't keep up! Did the system time change, or is the server overloaded?");
 					difference = toomuch;
@@ -110,13 +107,13 @@ public class ServerRunner extends Thread {
 
 		long time = System.nanoTime();
 
-		listeners.forEach((delay, ticker) -> {
-			if (tickCounter % delay == 0) {
+		listeners.forEach((ticker) -> {
+			if (tickCounter % ticker.getTickDelay() == 0) {
 				ticker.tick();
 			}
 		});
 
-		// NOTE: В секундах
+		// NOTE: пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 		float tickTime = (System.nanoTime() - time) / 1000000.0f;
 
 		tickTimeArray[this.tickCounter % tickTimeArray.length] = tickTime;
